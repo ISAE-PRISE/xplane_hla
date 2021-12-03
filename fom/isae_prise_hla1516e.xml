@@ -1,0 +1,722 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--
+	***************************************************************************
+    ISAE-SUPAERO - PRISE PROJECT
+    Designed for HLA Compliant Distributed Cyber-Physical Systems Simulation
+    Copyright (C) 2019  ISAE
+ 
+    This program is free software ; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation ; either version 2 of the License, or
+   (at your option) any later version.
+ 
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY ; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+   GNU General Public License for more details.
+
+   You should have received a copy of the GNU General Public License
+   along with this program ; if not, write to the Free Software
+   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ 
+   ***************************************************************************
+
+  ***************************************************************************
+   bugReport to : jean-baptiste.chaudron@isae-supaero.fr
+   ***************************************************************************
+   
+   Version 1.0
+   ***************************************************************************
+-->
+<objectModel xsi:schemaLocation="http://standards.ieee.org/IEEE1516-2010 http://standards.ieee.org/downloads/1516/1516.2-2010/IEEE1516-DIF-2010.xsd" xmlns="http://standards.ieee.org/IEEE1516-2010" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <modelIdentification>
+        <name>ISAE-PRISE Cyber-Physical Systems FOM</name>
+        <type>FOM</type>
+        <version>1.0</version>
+        <modificationDate>2019-11-27</modificationDate>
+        <securityClassification></securityClassification>
+        <purpose>FOM for Cyber-Physical Systems simulation, especially Aircraft Systems Simulations using HLA standard IEEE-1516-2010</purpose>
+        <applicationDomain></applicationDomain>
+        <description></description>
+        <useLimitation/>
+        <poc>
+            <pocType>Author</pocType>
+            <pocName>Jean-Baptiste Chaudron</pocName>
+            <pocOrg>ISAE-SUPAERO</pocOrg>
+            <pocTelephone></pocTelephone>
+            <pocEmail>jean-baptiste.chaudron@isae-supaero.fr</pocEmail>
+        </poc>
+    </modelIdentification>
+    <objects>
+        <objectClass>
+            <name>ClassFlightDynamicsModel</name>
+            <attribute>
+                <name>AttrFlightDynamicsModelData</name>
+                <dataType>HLAFlightDynamicsModelData</dataType>
+                <transportation>HLAreliable</transportation>
+                <order>TimeStamp</order>
+            </attribute>
+        </objectClass>
+        <objectClass>
+            <name>ClassControlCommandModel</name>
+            <attribute>
+                <name>AttrControlCommandModelData</name>
+                <dataType>HLAControlCommandModelData</dataType>
+                <transportation>HLAreliable</transportation>
+                <order>TimeStamp</order>
+            </attribute>
+        </objectClass>
+        <objectClass>
+            <name>ClassHydraulicActuatorsModel</name>
+            <attribute>
+                <name>AttrHydraulicActuatorsModelData</name>
+                <dataType>HLAHydraulicActuatorsModelData</dataType>
+                <transportation>HLAreliable</transportation>
+                <order>TimeStamp</order>
+            </attribute>
+        </objectClass>
+        <objectClass>
+            <name>ClassEngineActuatorsModel</name>
+            <attribute>
+                <name>AttrEngineActuatorsModelData</name>
+                <dataType>HLAEngineActuatorsModelData</dataType>
+                <transportation>HLAreliable</transportation>
+                <order>TimeStamp</order>
+            </attribute>
+        </objectClass>
+        <objectClass>
+            <name>ClassTimeInformationModel</name>
+            <attribute>
+                <name>AttrTimeInformationModelData</name>
+                <dataType>HLATimeInformationModelData</dataType>
+                <transportation>HLAreliable</transportation>
+                <order>TimeStamp</order>
+            </attribute>
+        </objectClass>
+    </objects>
+    <interactions>
+        <interactionClass>
+            <name>ForcePosition</name>
+            <transportation>HLAreliable</transportation>
+            <order>TimeStamp</order>
+            <parameter>
+                <name>PlaneName</name>
+                <dataType>HLAunicodeString</dataType>
+            </parameter>
+            <parameter>
+                <name>Position</name>
+                <dataType>HLAPosition</dataType>
+            </parameter>
+        </interactionClass>
+        <interactionClass>
+            <name>VolFormation</name>
+            <transportation>HLAreliable</transportation>
+            <order>TimeStamp</order>
+            <parameter>
+                <name>PlaneIdentification</name>
+                <dataType>HLAplaneIdentification</dataType>
+            </parameter>
+            <parameter>
+                <name>PositionInFormation</name>
+                <dataType>HLApositionInFormation</dataType>
+            </parameter>
+        </interactionClass>
+    </interactions>
+    <dataTypes>
+      <basicDataRepresentations>
+         <basicData>
+            <name>HLAinteger16BE</name>
+            <size>16</size>
+            <interpretation>Integer in the range [-2^15, 2^15 - 1]</interpretation>
+            <endian>Big</endian>
+            <encoding>16-bit two's complement signed integer. The most significant bit contains the sign.</encoding>
+         </basicData>
+         <basicData>
+            <name>HLAinteger32BE</name>
+            <size>32</size>
+            <interpretation>Integer in the range [-2^31, 2^31 - 1]</interpretation>
+            <endian>Big</endian>
+            <encoding>32-bit two's complement signed integer. The most significant bit contains the sign.</encoding>
+         </basicData>
+         <basicData>
+            <name>HLAinteger64BE</name>
+            <size>64</size>
+            <interpretation>Integer in the range [-2^63, 2^63 - 1]</interpretation>
+            <endian>Big</endian>
+            <encoding>64-bit two's complement signed integer first. The most significant bit contains the sign.
+            </encoding>
+         </basicData>
+         <basicData>
+            <name>HLAfloat32BE</name>
+            <size>32</size>
+            <interpretation>Single-precision floating point number</interpretation>
+            <endian>Big</endian>
+            <encoding>32-bit IEEE normalized single-precision format. See IEEE Std 754-1985</encoding>
+         </basicData>
+         <basicData>
+            <name>HLAfloat64BE</name>
+            <size>64</size>
+            <interpretation>Double-precision floating point number</interpretation>
+            <endian>Big</endian>
+            <encoding>64-bit IEEE normalized double-precision format. See IEEE Std 754-1985</encoding>
+         </basicData>
+         <basicData>
+            <name>HLAoctetPairBE</name>
+            <size>16</size>
+            <interpretation>16-bit value</interpretation>
+            <endian>Big</endian>
+            <encoding>Assumed to be portable among devices.</encoding>
+         </basicData>
+         <basicData>
+            <name>HLAinteger16LE</name>
+            <size>16</size>
+            <interpretation>Integer in the range [-2^15, 2^15 - 1]</interpretation>
+            <endian>Little</endian>
+            <encoding>16-bit two's complement signed integer. The most significant bit contains the sign.</encoding>
+         </basicData>
+         <basicData>
+            <name>HLAinteger32LE</name>
+            <size>32</size>
+            <interpretation>Integer in the range [-2^31, 2^31 - 1]</interpretation>
+            <endian>Little</endian>
+            <encoding>32-bit two's complement signed integer. The most significant bit contains the sign.</encoding>
+         </basicData>
+         <basicData>
+            <name>HLAinteger64LE</name>
+            <size>64</size>
+            <interpretation>Integer in the range [-2^63, 2^63 - 1]</interpretation>
+            <endian>Little</endian>
+            <encoding>64-bit two's complement signed integer first. The most significant bit contains the sign.
+            </encoding>
+         </basicData>
+         <basicData>
+            <name>HLAfloat32LE</name>
+            <size>32</size>
+            <interpretation>Single-precision floating point number</interpretation>
+            <endian>Little</endian>
+            <encoding>32-bit IEEE normalized single-precision format. See IEEE Std 754-1985</encoding>
+         </basicData>
+         <basicData>
+            <name>HLAfloat64LE</name>
+            <size>64</size>
+            <interpretation>Double-precision floating point number</interpretation>
+            <endian>Little</endian>
+            <encoding>64-bit IEEE normalized double-precision format. See IEEE Std 754-1985</encoding>
+         </basicData>
+         <basicData>
+            <name>HLAoctetPairLE</name>
+            <size>16</size>
+            <interpretation>16-bit value</interpretation>
+            <endian>Little</endian>
+            <encoding>Assumed to be portable among hardware devices.</encoding>
+         </basicData>
+         <basicData>
+            <name>HLAoctet</name>
+            <size>8</size>
+            <interpretation>8-bit value</interpretation>
+            <endian>Big</endian>
+            <encoding>Assumed to be portable among hardware devices.</encoding>
+         </basicData>
+      </basicDataRepresentations>
+      <simpleDataTypes>
+          <simpleData>
+            <name>HLAunicodeChar</name>
+            <representation>HLAoctetPairBE</representation>
+            <units>NA</units>
+            <resolution>NA</resolution>
+            <accuracy>NA</accuracy>
+            <semantics>Unicode UTF-16 character (see The Unicode Standard, Version 3.0)</semantics>
+          </simpleData>
+      </simpleDataTypes>
+      <arrayDataTypes>
+          <arrayData>
+              <name>HLAunicodeString</name>
+              <dataType>HLAunicodeChar</dataType>
+              <cardinality>Dynamic</cardinality>
+              <encoding>HLAvariableArray</encoding>
+              <semantics>Unicode string representation</semantics>
+              <cardinality> Dynamic </cardinality>
+          </arrayData>
+          <arrayData>
+              <name>HLAThrottleArray</name>
+              <dataType>HLAfloat32LE</dataType>
+              <cardinality>8</cardinality>
+              <encoding>HLAfixedArray</encoding>
+              <semantics>Throttle (per engine) when overridden by you, plus with thrust vectors</semantics>
+          </arrayData>
+          <arrayData>
+              <name>HLAEngineThrottleArrayDataType</name>
+              <dataType>HLAfloat32LE</dataType>
+              <cardinality>8</cardinality>
+              <encoding>HLAfixedArray</encoding>
+              <semantics>Throttle (per engine) when overridden by you, plus with thrust vectors</semantics>
+          </arrayData>
+          <arrayData>
+              <name>HLAEngineThrustArrayDataType</name>
+              <dataType>HLAfloat32LE</dataType>
+              <cardinality>8</cardinality>
+              <encoding>HLAfixedArray</encoding>
+              <semantics>THrust (per engine) </semantics>
+          </arrayData>
+          <arrayData>
+              <name>HLAEngineN1PercentArrayDataType</name>
+              <dataType>HLAfloat32LE</dataType>
+              <cardinality>8</cardinality>
+              <encoding>HLAfixedArray</encoding>
+              <semantics>sim/cockpit2/engine/indicators/N1_percent	float[8]	n	percent	N1, %.</semantics>
+          </arrayData>
+          <arrayData>
+              <name>HLAEngineN2PercentArrayDataType</name>
+              <dataType>HLAfloat32LE</dataType>
+              <cardinality>8</cardinality>
+              <encoding>HLAfixedArray</encoding>
+              <semantics>sim/cockpit2/engine/indicators/N2_percent	float[8]	n	percent	N2, %.</semantics>
+          </arrayData>
+          <arrayData>
+              <name>HLAEngineEGTArrayDataType</name>
+              <dataType>HLAfloat32LE</dataType>
+              <cardinality>8</cardinality>
+              <encoding>HLAfixedArray</encoding>
+              <semantics>sim/cockpit2/engine/indicators/EGT_deg_C	float[8]	n	degrees_Celsius	EGT, deg.</semantics>
+          </arrayData>
+          <arrayData>
+              <name>HLAEngineEPRArrayDataType</name>
+              <dataType>HLAfloat32LE</dataType>
+              <cardinality>8</cardinality>
+              <encoding>HLAfixedArray</encoding>
+              <semantics>sim/cockpit2/engine/indicators/EPR_ratio	float[8]	n	ratio	EPR, ratio.</semantics>
+          </arrayData>
+          <arrayData>
+              <name>HLAEngineFullFLowArrayDataType</name>
+              <dataType>HLAfloat32LE</dataType>
+              <cardinality>8</cardinality>
+              <encoding>HLAfixedArray</encoding>
+              <semantics>sim/cockpit2/engine/indicators/fuel_flow_kg_sec	float[8]	n	kilograms/second	FF, kilograms per second.</semantics>
+          </arrayData>
+          <arrayData>
+              <name>HLAGearsEffectiveDeploymentDataType</name>
+              <dataType>HLAfloat32LE</dataType>
+              <cardinality>10</cardinality>
+              <encoding>HLAfixedArray</encoding>
+              <semantics>...</semantics>
+          </arrayData>
+      </arrayDataTypes>
+      <fixedRecordDataTypes>
+        <fixedRecordData>
+          <name>HLAFlightDynamicsModelData</name>
+          <encoding>HLAfixedRecord</encoding>
+          <semantics>rezrze</semantics>
+          <field>
+            <name>HLAlatitutdeDeg</name>
+            <dataType>HLAfloat64LE</dataType>
+            <semantics>standard GPS latitude</semantics>
+          </field>
+          <field>
+            <name>HLAlongitudeDeg</name>
+            <dataType>HLAfloat64LE</dataType>
+            <semantics>standard GPS longitude</semantics>
+          </field>
+          <field>
+            <name>HLAaltitudeMSLMeters</name>
+            <dataType>HLAfloat64LE</dataType>
+            <semantics>standard GPS elevation</semantics>
+          </field>
+          <field>
+            <name>HLAaltitudeAGLMeters</name>
+            <dataType>HLAfloat32LE</dataType>
+            <semantics>standard GPS elevation</semantics>
+          </field>
+          <field>
+            <name>HLAphiDeg</name>
+            <dataType>HLAfloat32LE</dataType>
+            <semantics>roll to the right (CCW around NED_x)</semantics>
+          </field>
+          <field>
+            <name>HLAthetaDeg</name>
+            <dataType>HLAfloat32LE</dataType>
+            <semantics>pitch up (CCW around NED_y)</semantics>
+          </field>
+          <field>
+            <name>HLApsiDeg</name>
+            <dataType>HLAfloat32LE</dataType>
+            <semantics>yaw to the right (CCW around NED_z)</semantics>
+          </field>
+          <field>
+            <name>HLAalphaDeg</name>
+            <dataType>HLAfloat32LE</dataType>
+            <semantics>pitch up (CCW around NED_y)</semantics>
+          </field>
+          <field>
+            <name>HLAbetaDeg</name>
+            <dataType>HLAfloat32LE</dataType>
+            <semantics>yaw right (CCW around NED_z)</semantics>
+          </field>
+          <field>
+            <name>HLAhpathDeg</name>
+            <dataType>HLAfloat32LE</dataType>
+            <semantics>NA</semantics>
+          </field>
+          <field>
+            <name>HLAvpathDeg</name>
+            <dataType>HLAfloat32LE</dataType>
+            <semantics>NA</semantics>
+          </field>
+          <field>
+            <name>HLApDegps</name>
+            <dataType>HLAfloat32LE</dataType>
+            <semantics>roll degrees per second</semantics>
+          </field>
+          <field>
+            <name>HLAqDegps</name>
+            <dataType>HLAfloat32LE</dataType>
+            <semantics>pitch degrees per second</semantics>
+          </field>
+          <field>
+            <name>HLArDegps</name>
+            <dataType>HLAfloat32LE</dataType>
+            <semantics>yaw degrees per second</semantics>
+          </field>
+          <field>
+            <name>HLAtrueAirspeedMetersps</name>
+            <dataType>HLAfloat32LE</dataType>
+            <semantics>3D true airspeed, meters/second</semantics>
+          </field>
+          <field>
+            <name>HLAindicatedAirspeedKias</name>
+            <dataType>HLAfloat32LE</dataType>
+            <semantics>3D true airspeed, meters/second</semantics>
+          </field>
+          <field>
+            <name>HLAgroundspeedMetersps</name>
+            <dataType>HLAfloat32LE</dataType>
+            <semantics>3D true airspeed, meters/second</semantics>
+          </field>
+          <field>
+            <name>HLAverticalspeedMetersps</name>
+            <dataType>HLAfloat32LE</dataType>
+            <semantics>3D true airspeed, meters/second</semantics>
+          </field>
+          <field>
+            <name>HLAvMach</name>
+            <dataType>HLAfloat32LE</dataType>
+            <semantics>3D true airspeed, meters/second</semantics>
+          </field>
+          <field>
+            <name>HLArho</name>
+            <dataType>HLAfloat32LE</dataType>
+            <semantics>air density</semantics>
+          </field>
+          <field>
+            <name>HLAlocalX</name>
+            <dataType>HLAfloat64LE</dataType>
+            <semantics>The location of the plane in OpenGL coordinates</semantics>
+          </field>
+          <field>
+            <name>HLAlocalY</name>
+            <dataType>HLAfloat64LE</dataType>
+            <semantics>The location of the plane in OpenGL coordinates</semantics>
+          </field>
+          <field>
+            <name>HLAlocalZ</name>
+            <dataType>HLAfloat64LE</dataType>
+            <semantics>The location of the plane in OpenGL coordinates</semantics>
+          </field>
+          <field>
+            <name>HLAlocalVxMetersps</name>
+            <dataType>HLAfloat32LE</dataType>
+            <semantics>velocity, meters/sec, in OGL frame of reference</semantics>
+          </field>
+          <field>
+            <name>HLAlocalVyMetersps</name>
+            <dataType>HLAfloat32LE</dataType>
+            <semantics>velocity, meters/sec, in OGL frame of reference</semantics>
+          </field>
+          <field>
+            <name>HLAlocalVzMetersps</name>
+            <dataType>HLAfloat32LE</dataType>
+            <semantics>velocity, meters/sec, in OGL frame of reference</semantics>
+          </field>
+          <field>
+            <name>HLAlocalAxMetersps2</name>
+            <dataType>HLAfloat32LE</dataType>
+            <semantics>acceleration, meters/sec/sec, in OGL frame of reference</semantics>
+          </field>
+          <field>
+            <name>HLAlocalAyMetersps2</name>
+            <dataType>HLAfloat32LE</dataType>
+            <semantics>acceleration, meters/sec/sec, in OGL frame of reference</semantics>
+          </field>
+          <field>
+            <name>HLAlocalAzMetersps2</name>
+            <dataType>HLAfloat32LE</dataType>
+            <semantics>acceleration, meters/sec/sec, in OGL frame of reference</semantics>
+          </field>
+          <field>
+            <name>HLAThrottle</name>
+            <dataType>HLAThrottleArray</dataType>
+            <semantics>Throttle (per engine) when overridden by you, plus with thrust vectors - use override_throttles to change</semantics>
+          </field>
+        </fixedRecordData>
+        <fixedRecordData>
+          <name>HLATimeInformationModelData</name>
+          <encoding>HLAfixedRecord</encoding>
+          <semantics>...</semantics>
+          <field>
+            <name>HLAdateDays</name>
+            <dataType>HLAinteger32LE</dataType>
+            <semantics>Date of the day</semantics>
+          </field>
+          <field>
+            <name>HLAlocalTimeSec</name>
+            <dataType>HLAfloat32LE</dataType>
+            <semantics>Date of the day</semantics>
+          </field>
+        </fixedRecordData>
+        <fixedRecordData>
+          <name>HLAControlCommandModelData</name>
+          <encoding>HLAfixedRecord</encoding>
+          <semantics>...</semantics>
+          <field>
+            <name>HLAElevatorDeflectionNormCommand</name>
+            <dataType>HLAfloat32LE</dataType>
+            <semantics>Flight Control Pitch (sum of yoke plus artificial stability) [-1...1] Float</semantics>
+          </field>
+          <field>
+            <name>HLAAileronDeflectionNormCommand</name>
+            <dataType>HLAfloat32LE</dataType>
+            <semantics>Flight Control Roll (sum of yoke plus artificial stability) [-1...1] Float</semantics>
+          </field>
+          <field>
+            <name>HLARudderDeflectionNormCommand</name>
+            <dataType>HLAfloat32LE</dataType>
+            <semantics>Flight Control Roll (sum of yoke plus artificial stability) [-1...1] Float</semantics>
+          </field>
+          <field>
+            <name>HLAThrottleCommand</name>
+            <dataType>HLAThrottleArray</dataType>
+            <semantics>Throttle (per engine) when overridden by you, plus with thrust vectors - use override_throttles to change</semantics>
+          </field>
+          <field>
+            <name>HLAStabilizerDeflectionDegreesCommand</name>
+            <dataType>HLAfloat32LE</dataType>
+            <semantics>...</semantics>
+          </field>
+          <field>
+            <name>HLAGearHandleStatusSwitchCommand</name>
+            <dataType>HLAboolean</dataType>
+            <semantics>...</semantics>
+          </field>
+          <field>
+            <name>HLASpeedBrakesRatioCommand</name>
+            <dataType>HLAfloat32LE</dataType>
+            <semantics>...</semantics>
+          </field>
+          <field>
+            <name>HLAFlapsDeploymentRatioCommand</name>
+            <dataType>HLAfloat32LE</dataType>
+            <semantics>...</semantics>
+          </field>
+          <field>
+            <name>HLAParkingBrakesRatioCommand</name>
+            <dataType>HLAfloat32LE</dataType>
+            <semantics>...</semantics>
+          </field>
+        </fixedRecordData>
+        <fixedRecordData>
+          <name>HLAHydraulicActuatorsModelData</name>
+          <encoding>HLAfixedRecord</encoding>
+          <semantics>...</semantics>
+          <field>
+            <name>HLALeftAileronEffectiveDeflection</name>
+            <dataType>HLAfloat32LE</dataType>
+            <semantics>...</semantics>
+          </field>
+          <field>
+            <name>HLALRightAileronEffectiveDeflection</name>
+            <dataType>HLAfloat32LE</dataType>
+            <semantics>....</semantics>
+          </field>
+          <field>
+            <name>HLALeftElevatorEffectiveDeflection</name>
+            <dataType>HLAfloat32LE</dataType>
+            <semantics>...</semantics>
+          </field>
+          <field>
+            <name>HLARightlevatorEffectiveDeflection</name>
+            <dataType>HLAfloat32LE</dataType>
+            <semantics>....</semantics>
+          </field>
+          <field>
+            <name>HLAStabilizerEffectiveDeflection</name>
+            <dataType>HLAfloat32LE</dataType>
+            <semantics>...</semantics>
+          </field>
+          <field>
+            <name>HLAFlapsEffectiveDeflection</name>
+            <dataType>HLAfloat32LE</dataType>
+            <semantics>...</semantics>
+          </field>
+          <field>
+            <name>HLARudderEffectiveDeflection</name>
+            <dataType>HLAfloat32LE</dataType>
+            <semantics>...</semantics>
+          </field>
+          <field>
+            <name>HLALeftSpeedbrakesEffectiveDeflection</name>
+            <dataType>HLAfloat32LE</dataType>
+            <semantics>...</semantics>
+          </field>
+          <field>
+            <name>HLARightSpeedbrakesEffectiveDeflection</name>
+            <dataType>HLAfloat32LE</dataType>
+            <semantics>....</semantics>
+          </field>
+          <field>
+            <name>HLALeftSpoilersEffectiveDeflection</name>
+            <dataType>HLAfloat32LE</dataType>
+            <semantics>...</semantics>
+          </field>
+          <field>
+            <name>HLARightSpoilersEffectiveDeflection</name>
+            <dataType>HLAfloat32LE</dataType>
+            <semantics>....</semantics>
+          </field>
+          <field>
+            <name>HLAGearsEffectiveDeploymentRatio</name>
+            <dataType>HLAGearsEffectiveDeploymentDataType</dataType>
+            <semantics>sim/flightmodel/engine/throttle_used_ratio</semantics>
+          </field>
+        </fixedRecordData>
+        <fixedRecordData>
+          <name>HLAEngineActuatorsModelData</name>
+          <encoding>HLAfixedRecord</encoding>
+          <semantics>...</semantics>
+          <field>
+            <name>HLAEnginesEffectiveThrottleRatio</name>
+            <dataType>HLAEngineThrottleArrayDataType</dataType>
+            <semantics>sim/flightmodel/engine/throttle_used_ratio</semantics>
+          </field>
+          <field>
+            <name>HLAEnginesEffectiveThrust</name>
+            <dataType>HLAEngineThrustArrayDataType</dataType>
+            <semantics>sim/flightmodel/engine/POINT_thrust  float[8], Engines thrust vector</semantics>
+          </field>
+          <field>
+            <name>HLAEnginesEffectiveN1Percent</name>
+            <dataType>HLAEngineN1PercentArrayDataType</dataType>
+            <semantics>sim/flightmodel/engine/ENGN_N1_	float[8]	y	percent	N1 speed as percent of max (per engine)</semantics>
+          </field>
+          <field>
+            <name>HLAEnginesEffectiveN2Percent</name>
+            <dataType>HLAEngineN2PercentArrayDataType</dataType>
+            <semantics>sim/flightmodel/engine/ENGN_N2_	float[8]	y	percent	N1 speed as percent of max (per engine)</semantics>
+          </field>
+          <field>
+            <name>HLAEnginesEffectiveEGT</name>
+            <dataType>HLAEngineEGTArrayDataType</dataType>
+            <semantics>sim/flightmodel/engine/ENGN_EGT	float[8]	y	ratio	Exhaust Gas Temperature (ratio from min to max)</semantics>
+          </field>
+          <field>
+            <name>HLAEnginesEffectiveEPR</name>
+            <dataType>HLAEngineEPRArrayDataType</dataType>
+            <semantics>sim/flightmodel/engine/ENGN_EPR	float[8]	y	EPR	Engine Pressure Ratio (per engine)</semantics>
+          </field>
+          <field>
+            <name>HLAEngineEffectiveFuelFLow</name>
+            <dataType>HLAEngineFullFLowArrayDataType</dataType>
+            <semantics>sim/flightmodel/engine/ENGN_FF_	float[8]	y	kg/s	Fuel flow (per engine) in kg/second</semantics>
+          </field>
+        </fixedRecordData>
+        <fixedRecordData>
+          <name>HLAPosition</name>
+          <encoding>HLAfixedRecord</encoding>
+          <semantics>rezrze</semantics>
+          <field>
+            <name>HLAlatitutdeDeg</name>
+            <dataType>HLAfloat64LE</dataType>
+            <semantics>standard GPS latitude</semantics>
+          </field>
+          <field>
+            <name>HLAlongitudeDeg</name>
+            <dataType>HLAfloat64LE</dataType>
+            <semantics>standard GPS longitude</semantics>
+          </field>
+          <field>
+            <name>HLAaltitudeMSLMeters</name>
+            <dataType>HLAfloat64LE</dataType>
+            <semantics>standard GPS elevation</semantics>
+          </field>
+        </fixedRecordData>
+        <fixedRecordData>
+          <name>HLAplaneIdentification</name>
+          <encoding>HLAfixedRecord</encoding>
+          <semantics>rezrze</semantics>
+          <field>
+            <name>HLAplaneName</name>
+            <dataType>HLAunicodeString</dataType>
+            <semantics>Name of the plane where position have to changed</semantics>
+          </field>
+          <field>
+            <name>HLAnumFederate</name>
+            <dataType>HLAinteger32LE</dataType>
+            <semantics>Num of the federate in the formation</semantics>
+          </field>
+        </fixedRecordData>
+        <fixedRecordData>
+          <name>HLApositionInFormation</name>
+          <encoding>HLAfixedRecord</encoding>
+          <semantics>rezrze</semantics>
+          <field>
+            <name>HLAlatitutdeDeg</name>
+            <dataType>HLAfloat64LE</dataType>
+            <semantics>standard GPS latitude</semantics>
+          </field>
+          <field>
+            <name>HLAlongitudeDeg</name>
+            <dataType>HLAfloat64LE</dataType>
+            <semantics>standard GPS longitude</semantics>
+          </field>
+          <field>
+            <name>HLAaltitudeMSLMeters</name>
+            <dataType>HLAfloat64LE</dataType>
+            <semantics>standard GPS elevation</semantics>
+          </field>
+          <field>
+            <name>HLAdistance</name>
+            <dataType>HLAfloat64LE</dataType>
+            <semantics>Distance between planes</semantics>
+          </field>
+          <field>
+            <name>HLAvitesse</name>
+            <dataType>HLAfloat64LE</dataType>
+            <semantics>vitesse of the planes</semantics>
+          </field>
+          <field>
+            <name>HLAcap</name>
+            <dataType>HLAfloat64LE</dataType>
+            <semantics>cap of the planes</semantics>
+          </field>
+          <field>
+            <name>HLAformation</name>
+            <dataType>HLAunicodeString</dataType>
+            <semantics>Type of the formation</semantics>
+          </field>
+        </fixedRecordData>
+      </fixedRecordDataTypes>
+	  <enumeratedDataTypes>
+         <enumeratedData>
+            <name>HLAboolean</name>
+            <representation>HLAinteger32BE</representation>
+            <semantics>Standard boolean type</semantics>
+            <enumerator>
+               <name>HLAfalse</name>
+               <value>0</value>
+            </enumerator>
+            <enumerator>
+               <name>HLAtrue</name>
+               <value>1</value>
+            </enumerator>
+         </enumeratedData>
+	  </enumeratedDataTypes>
+    </dataTypes>
+</objectModel>
